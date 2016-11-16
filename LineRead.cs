@@ -5,26 +5,27 @@ using System.Collections.Generic;
 public class LineRead : MonoBehaviour {
 
 	public TextAsset vocTexto;
-	TextMesh txtMsh;
+
 	private string lineaString;
 	public List<string> eachLine;
 	char[] eachLetter;
 	public List<char> letters;
-	string randomWord;
+	public string randomWord;
 	int totalW;
 	public int totalC;
-
+	public int lineIndex;
 	void Start ()
 	{
-		txtMsh = gameObject.GetComponent<TextMesh> ();
+		
 		lineaString = vocTexto.text;
 		eachLine = new List<string> ();
 		eachLine.AddRange (lineaString.Split ("\n" [0]));
 		totalW = eachLine.Capacity;
 	
 		//Busca una palabra en random de la lista
+		eachLine.RemoveAt(eachLine.Capacity-1);
 		randomWord = eachLine[Random.Range(0,totalW-1)];
-		txtMsh.text = randomWord;
+		lineIndex = eachLine.IndexOf (randomWord);
 		eachLetter = randomWord.ToCharArray ();
 		letters.AddRange (eachLetter);
 		letters.RemoveAt (eachLetter.Length-1);
@@ -35,27 +36,15 @@ public class LineRead : MonoBehaviour {
 		 
 
 	void Update () {
-		StartCoroutine (hideText ());
-	
-
-	}
-
-	IEnumerator hideText(){
-		yield return new WaitForSeconds (1);
-		txtMsh.text = "";
-		yield return 0;
-		}
-	}
-
-	// Update is called once per frame
-	
 		
+	}
+
+		
+	}
+
+	
 
 
-	//void OnGUI(){
-	//	for (int i = 0; i < kWords; i++) {
-	//		GUILayout.Label (eachLine [i]);
-	//}			
-	//}
+	
 
 

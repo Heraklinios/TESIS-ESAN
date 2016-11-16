@@ -18,20 +18,35 @@ public class GroundDetect : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D obj){
 		if(obj.gameObject.CompareTag("Platform")){
 			this.gameObject.GetComponentInParent<Player> ().isGrounded = true;
+			this.gameObject.GetComponentInParent<Player>().jumpCount = 0;
 		}
 
 		if(obj.gameObject.CompareTag("F.Platform")){
 			this.gameObject.GetComponentInParent<Player> ().isGrounded = true;
+			this.gameObject.GetComponentInParent<Player>().jumpCount = 0;
+		}
+
+		if (obj.gameObject.CompareTag("M.Platform")) {
+			this.gameObject.GetComponentInParent<Player> ().isGrounded = true;
+			gameObject.GetComponentInParent<Player> ().transform.parent = obj.transform;
 		}
 	}
 
-	void OnTriggerExit2D(Collider2D obj){
-		if(obj.gameObject.CompareTag("Platform")){
-			this.gameObject.GetComponentInParent<Player> ().isGrounded = false;
+	void OnTriggerExit2D (Collider2D obj){
+		if (obj.gameObject.CompareTag("M.Platform")) {
+			
+			gameObject.GetComponentInParent<Player> ().transform.parent = null;
 		}
-		if(obj.gameObject.CompareTag("F.Platform")){
-			this.gameObject.GetComponentInParent<Player> ().isGrounded = false;
-		}
+	
 	}
 
-}
+	//void OnTriggerExit2D(Collider2D obj){
+	//	if(obj.gameObject.CompareTag("Platform")){
+	//		this.gameObject.GetComponentInParent<Player> ().isGrounded = false;
+	//	}
+	//	if(obj.gameObject.CompareTag("F.Platform")){
+	//		this.gameObject.GetComponentInParent<Player> ().isGrounded = false;
+	//	}
+	}
+
+

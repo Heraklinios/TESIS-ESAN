@@ -3,32 +3,45 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-
+	public int lastItemCollected = 0;
 	float h;
 	Rigidbody2D rb;
-	public int speed;
+	Animator anim;
+	SpriteRenderer sp;
+	int speed = 28;
 	public float jumpSpeed;
 	float jumpBounce;
+	public int jumpCount = 0;
 	public int letterCount = 0;
-
+	private GameObject instance;
 	public bool isGrounded = true;
+	public float axisX = -23;
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D> ();
+		anim = GetComponent<Animator> ();
 		jumpBounce = jumpSpeed * 1.5f;
+		sp = GetComponent<SpriteRenderer> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		h = Input.GetAxis ("Horizontal");
-		if (this.gameObject.transform.position.x <= -20) {
+		h = Input.acceleration.x;
+		anim.SetFloat ("Move", Mathf.Abs(h));
+		if (h >= 0) {
+			sp.flipX = false;
+		}
+		if (h < 0) {
+			sp.flipX = true;
+		}
+		if (this.gameObject.transform.position.x <= -24) {
 
-			transform.position = new Vector2 (20, transform.position.y);
+			transform.position = new Vector2 (24, transform.position.y);
 		}
 
-		if (this.gameObject.transform.position.x > 20) {
+		if (this.gameObject.transform.position.x > 24) {
 
-			transform.position = new Vector2 (-20, transform.position.y);
+			transform.position = new Vector2 (-24, transform.position.y);
 		}
 
 		if (this.gameObject.transform.position.y <= -4) {
@@ -39,9 +52,11 @@ public class Player : MonoBehaviour {
 	}
 	void FixedUpdate(){
 		rb.velocity = new Vector2 (h * speed, rb.velocity.y);
-		if(Input.GetKey(KeyCode.Space) && isGrounded == true){
+		if(Input.GetTouch(0).phase == TouchPhase.Began && isGrounded == true){
 			rb.AddForce (Vector2.up * jumpSpeed);
-            isGrounded = false;
+			anim.SetBool ("Jump", true);
+			isGrounded = false;
+			StartCoroutine(Reset ());
 
 		}
 
@@ -52,18 +67,34 @@ public class Player : MonoBehaviour {
 		
 		if (obj.gameObject.CompareTag ("Box")) {
 			obj.gameObject.SetActive (false);
+			rb.velocity = new Vector2 (rb.velocity.x, 0);
 			rb.AddForce (Vector2.up * jumpBounce);
 
-		}
-		if (obj.gameObject.CompareTag ("Letter")) {
-			letterCount++;	
-			obj.gameObject.SetActive (false);
-		
-		
+
 		}
 
-		if (obj.gameObject.CompareTag ("F.Platform")) {
-            isGrounded = true;
-		}
+
+	}
+
+
+
+	//void OnTriggerEnter2D(Collider2D obj){
+	//	if (obj.gameObject.CompareTag ("Letter")) {
+			
+//letterCount++;	
+
+		//	obj.gameObject.SetActive (false);	
+	//		instance = Instantiate (Resources.Load ("Boom", typeof(GameObject))) as GameObject;
+	//		Instantiate (instance, obj.gameObject.transform.position, obj.gameObject.transform.rotation);
+
+	//	}
+
+	//}
+
+
+
+	IEnumerator Reset(){
+		yield return new WaitForSeconds (1);
+		anim.SetBool ("Jump", false);
 	}
 }
